@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log My IP</title>
+
+    <meta name="author" content="Nathan Hedge">
+    <meta property="twitter:creator" content="@Nate494f">
+    <meta property="og:site_name" content="almostd.one">
+    <meta property="og:title" content="almostd.one">
+    <meta name="twitter:title" content="almostd.one">
+    <meta name="description" content="logmyip.com is a website run by independent programmer Nathan Hedge that allows you to voluntarily log your IP and display it on a world map with everyone else.">
+    <meta property="og:description" content="logmyip.com is a website run by independent programmer Nathan Hedge that allows you to voluntarily log your IP and display it on a world map with everyone else.">
+    <meta name="keywords" content="almostdone, almostd.one, almost done, log my ip, ip log, logmyip.com, logmyip, iplog, ipmap, ip map, world, worldwide, Development, Nathan, Nathan B, Nathan Hedge, 10nates, nate, nates, github, nate494f, 494f">
+    <meta property="og:image" content="https://logmyip.com/src/logo/logo.png">
+    <meta name="twitter:image" content="https://logmyip.com/src/logo/logo.png">
+    <meta property="og:url" content="https://logmyip.com/">
+    <meta name="twitter:url" content="https://logmyip.com/">
+    <meta property="og:type" content="website">
+    <meta name="twitter:card" content="summary_large_image">
+
+    <link rel="icon" href="src/logo/logo.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="src/logo/logo.png">
+
+    <link rel="stylesheet" href="src/style.css">
+    <script src="https://almostd.one/pkg/microcookie-min.js"></script>
+    <script src="src/script.js" defer></script>
+</head>
+<body>
+    <h1 id="title">Log My IP</h1>
+    <p>Log your own IP - <span id="will">willingly!</span></p>
+    <br>
+    <div id="info">
+        <p id="uip">Your IP: {{userip}}</p>
+    </div>
+    <form>
+        <button type="submit">Log it!</button>
+    </form>
+    <div id="mapcontainer">
+        
+    </div>
+
+
+    <footer>
+        <p id="copyright">Copyright © 2022 Nathan Hedge; <a class="pa" href="https://github.com/10nates/logmyip">licensed under the MIT license</a></p>
+    </footer>
+</body>
+</html>
