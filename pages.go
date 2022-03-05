@@ -202,7 +202,6 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 
 // internal - taken from https://golangcode.com/get-the-request-ip-addr/
 func getIP(r *http.Request) string {
-	return "8.8.8.8"
 	forwarded := r.Header.Get("X-FORWARDED-FOR")
 	if forwarded != "" {
 		return forwarded
