@@ -9,16 +9,16 @@ import (
 	"strings"
 )
 
-type iplast struct {
-	ip string
-	tc uint64
-}
-
 type ipdata struct {
 	OK   bool   `json:"ok"`
 	IP   string `json:"ip"`
 	Ulat uint16 `json:"absolute_latitude"`
 	Ulon uint16 `json:"absolute_longitude"`
+}
+
+type iplast struct {
+	ip string
+	tc uint64
 }
 
 type mapcached struct {
