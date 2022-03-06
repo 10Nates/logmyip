@@ -1,0 +1,58 @@
+body {
+    margin: 0;
+    text-align: center;
+    background: white;
+    color: black;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+header, footer {
+    position: fixed;
+    background: black;
+    color: white;
+}
+
+.i {
+    font-style: italic;
+}
+
+header {
+    top: 0;
+    width: 100%;
+}
+
+button {
+    background: #0098ff;
+    border: none;
+    color: white;
+    padding: 1em;
+}
+
+#info {
+    font-weight: bold;
+}
+
+#content {
+    font-size: 1.2em;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.map {
+    width: 90vw;
+    max-width: 40em;
+}
+
+footer {
+    padding: 0.5em;
+    font-size: 0.5em;
+    bottom: 0;
+    width: 100%;
+}
+
+.pa {
+    color: white;
+    text-decoration: none;
+}

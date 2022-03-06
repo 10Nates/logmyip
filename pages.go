@@ -16,9 +16,9 @@ type ipdata struct {
 	Ulon uint16 `json:"absolute_longitude"`
 }
 
-type iplast struct {
-	ip string
-	tc uint64
+type cachedip struct {
+	data ipdata
+	tc   uint64
 }
 
 type mapcached struct {
@@ -26,7 +26,7 @@ type mapcached struct {
 	cache string
 }
 
-var recents = []iplast{}
+var ipcache = []cachedip{}
 var mapcache = mapcached{valid: false}
 
 // path /
@@ -68,7 +68,7 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Received request " + r.URL.String())
 
-	info := ipinfo(r)
+	var info = ipinfo(r)
 	jinfo, err := json.Marshal(info)
 	if err != nil {
 		fmt.Println("Error with request:", r)
@@ -81,7 +81,7 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 	_, err2 := w.Write(jinfo)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
-		fmt.Println(err)
+		fmt.Println(err2)
 		w.WriteHeader(500)
 		return
 	}
@@ -198,6 +198,15 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Received request " + r.URL.String())
+
+	w.WriteHeader(200)
+	w.Header().Set("content-type", "image/svg+xml")
+
+	content, err := ioutil.ReadFile("src/maptemplate.svg")
+	if err != nil {
+		fmt.Println("Error with request:", r)
+		fmt.Println(err)
+	}
 }
 
 // internal - taken from https://golangcode.com/get-the-request-ip-addr/
@@ -206,5 +215,8 @@ func getIP(r *http.Request) string {
 	if forwarded != "" {
 		return forwarded
 	}
-	return r.RemoteAddr
+	if strings.Contains(r.RemoteAddr, "[::1]") {
+		return "1.1.1.1" // testing from localhost
+	}
+	return strings.Split(r.RemoteAddr, ":")[0]
 }
