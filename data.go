@@ -10,6 +10,9 @@ func pulldata(ip string) *storeipdata {
 
 }
 
+func pullall() *[]ipdata {
+}
+
 func storedata(data *ipdata) bool {
 
 }

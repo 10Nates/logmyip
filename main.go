@@ -10,6 +10,7 @@ const address = ":52899"
 func main() {
 	handlers()
 	fmt.Println("Log My IP server serving on " + address)
+
 	err := http.ListenAndServe(address, nil)
 	if err != nil {
 		panic(err)
@@ -25,6 +26,6 @@ func handlers() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/ipinfo", ipinfow)
 	http.HandleFunc("/logip", logip)
-	http.HandleFunc("/rendermap", rendermapw)
+	http.HandleFunc("/rendermap.svg", rendermapw)
 
 }

@@ -191,6 +191,9 @@ func ipinfo(r *http.Request) *ipdata {
 	}
 }
 
+//var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
+const circlesize = 2.5
+
 // path /rendermap
 func rendermapw(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -202,10 +205,41 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(200)
 	w.Header().Set("content-type", "image/svg+xml")
 
-	content, err := ioutil.ReadFile("src/maptemplate.svg")
+	var mapstring string
+	// already rendered
+	if mapcache.valid {
+		mapstring = mapcache.cache
+	} else {
+		// get template
+		contentb, err := ioutil.ReadFile("src/maptemplate.svg")
+		if err != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
+		content := strings.Split(string(contentb), "<!--template-->")
+
+		// pull from database
+		alldata := *pullall()
+
+		mapstring = content[0] // header
+		for i := 0; i < len(alldata); i++ {
+			newcircle := content[1]
+			//									   string from uint64 (uint64 from uint16)
+			strings.Replace(newcircle, "{ulat}", strconv.FormatUint(uint64(alldata[i].Ulat), 10), 1)
+			strings.Replace(newcircle, "{ulon}", strconv.FormatUint(uint64(alldata[i].Ulon), 10), 1)
+			strings.Replace(newcircle, "{size}", strconv.FormatFloat(circlesize, 'f', 4, 64), 1)
+			mapstring += newcircle
+		}
+		mapstring += content[2]
+	}
+
+	_, err := fmt.Fprint(w, mapstring)
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
+		w.WriteHeader(500)
 	}
 }
 
