@@ -8,6 +8,7 @@ import (
 const address = ":52899"
 
 func main() {
+	initdb()
 	handlers()
 	fmt.Println("Log My IP server serving on " + address)
 

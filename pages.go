@@ -18,7 +18,7 @@ type ipdata struct {
 
 type cachedip struct {
 	data ipdata
-	tc   uint64
+	tc   int64
 }
 
 type mapcached struct {
