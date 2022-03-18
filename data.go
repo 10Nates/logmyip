@@ -79,7 +79,19 @@ func pullall() *[]ipdata {
 }
 
 func storedata(data *storeipdata) bool {
-
+	if !data.e {
+		return false
+	}
+	ret := rdb.HSet(ctx, data.ip, "ulat", data.ulat, "ulon", data.ulon, "ts", data.ts)
+	res, err := ret.Result()
+	if err != nil {
+		return false
+	}
+	if res != 1 {
+		return false
+	} else {
+		return true
+	}
 }
 
 func storeDataToIPData(storedata *storeipdata) *ipdata {
@@ -100,6 +112,8 @@ func IPDatatoStoreData(data *ipdata, timestamp int64) *storeipdata {
 		ts:   timestamp,
 	}
 }
+
+// utility
 
 func getTS() int64 {
 	return time.Now().UnixMilli()

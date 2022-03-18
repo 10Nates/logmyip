@@ -18,7 +18,7 @@ type ipdata struct {
 
 type cachedip struct {
 	data ipdata
-	tc   int64
+	ts   int64
 }
 
 type mapcached struct {
@@ -41,6 +41,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
+		w.WriteHeader(500)
+		return
 	}
 	w.WriteHeader(200)
 	w.Header().Set("content-type", "text/html")
@@ -48,6 +50,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
+		w.WriteHeader(500)
+		return
 	}
 }
 
@@ -58,6 +62,32 @@ func logip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	fmt.Println("Received request " + r.URL.String())
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("Error with request:", r)
+		fmt.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	conf := r.FormValue("confirm")
+	if conf != "yes" {
+		w.WriteHeader(406)
+		return
+	}
+	data, ts := cachedipinfo(r)
+	sdat := IPDatatoStoreData(data, ts)
+	success := storedata(sdat)
+	if success {
+		w.WriteHeader(200)
+		w.Header().Set("content-type", "text/plain")
+		_, err := fmt.Fprint(w, "IP successfully stored")
+		if err != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
+	}
 }
 
 // path /ipinfo
@@ -68,7 +98,8 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Received request " + r.URL.String())
 
-	var info = ipinfo(r)
+	info, _ := cachedipinfo(r)
+
 	jinfo, err := json.Marshal(info)
 	if err != nil {
 		fmt.Println("Error with request:", r)
@@ -142,12 +173,19 @@ func ipinfo(r *http.Request) *ipdata {
 		ulat := uint16(ulatf + 180)
 		ulon := uint16(ulonf + 180)
 
-		return &ipdata{
+		retdata := &ipdata{
 			OK:   true,
 			IP:   userIP,
 			Ulat: ulat,
 			Ulon: ulon,
 		}
+
+		ipcache = append(ipcache, cachedip{
+			data: *retdata,
+			ts:   getTS(),
+		})
+
+		return retdata
 	} else {
 
 		//read content
@@ -182,12 +220,44 @@ func ipinfo(r *http.Request) *ipdata {
 		ulat := uint16(ulatf + 180)
 		ulon := uint16(ulonf + 180)
 
-		return &ipdata{
+		retdata := &ipdata{
 			OK:   true,
 			IP:   userIP,
 			Ulat: ulat,
 			Ulon: ulon,
 		}
+
+		ipcache = append(ipcache, cachedip{
+			data: *retdata,
+			ts:   getTS(),
+		})
+
+		return retdata
+	}
+}
+
+// internal
+func cachedipinfo(r *http.Request) (*ipdata, int64) {
+	cache := cachedip{}
+	cleanup := false
+	for _, e := range ipcache {
+		if e.data.IP == getIP(r) {
+			if e.ts > (getTS() - 86400000) { // 24 hours as ms
+				cache = e
+			} else {
+				cleanup = true
+			}
+		}
+	}
+
+	if cleanup {
+		go deleteOldCache()
+	}
+
+	if cache.data.OK {
+		return &cache.data, cache.ts
+	} else {
+		return ipinfo(r), getTS()
 	}
 }
 
@@ -227,12 +297,24 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		for i := 0; i < len(alldata); i++ {
 			newcircle := content[1]
 			//									   string from uint64 (uint64 from uint16)
-			strings.Replace(newcircle, "{ulat}", strconv.FormatUint(uint64(alldata[i].Ulat), 10), 1)
-			strings.Replace(newcircle, "{ulon}", strconv.FormatUint(uint64(alldata[i].Ulon), 10), 1)
-			strings.Replace(newcircle, "{size}", strconv.FormatFloat(circlesize, 'f', 4, 64), 1)
+			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatUint(uint64(alldata[i].Ulat), 10), 1)
+			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatUint(uint64(alldata[i].Ulon), 10), 1)
+			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(circlesize, 'f', 4, 64), 1)
 			mapstring += newcircle
 		}
 		mapstring += content[2]
+
+		// save cache & send
+		mapcache = mapcached{
+			valid: true,
+			cache: mapstring,
+		}
+		_, err2 := fmt.Fprint(w, mapstring)
+		if err2 != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+		}
 	}
 
 	_, err := fmt.Fprint(w, mapstring)
@@ -253,4 +335,15 @@ func getIP(r *http.Request) string {
 		return "1.1.1.1" // testing from localhost
 	}
 	return strings.Split(r.RemoteAddr, ":")[0]
+}
+
+// internal
+func deleteOldCache() {
+	newipcache := []cachedip{}
+	for _, e := range ipcache {
+		if e.ts < (getTS() - 86400000) { // 24 hours as ms {
+			newipcache = append(newipcache, e)
+		}
+	}
+	ipcache = newipcache
 }
