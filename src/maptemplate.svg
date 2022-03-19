@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 
-<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 180" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2" fill="#0098ff">
+<svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 180" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
     <!--template-->
-    <circle cx="{ulat}" cy="{ulon}" r="{size}" fill-opacity=".5"/>
+    <circle cx="{ulon}" cy="{ulat}" r="{size}" fill="#0098ff" fill-opacity=".5"/>
     <!--template-->
 </svg>

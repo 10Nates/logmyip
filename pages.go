@@ -44,8 +44,8 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	w.WriteHeader(200)
 	w.Header().Set("content-type", "text/html")
+	w.WriteHeader(200)
 	_, err2 := w.Write(content)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
@@ -79,8 +79,8 @@ func logip(w http.ResponseWriter, r *http.Request) {
 	success := storedata(sdat)
 	if success {
 		mapcache = mapcached{valid: false}
-		w.WriteHeader(200)
 		w.Header().Set("content-type", "text/plain")
+		w.WriteHeader(200)
 		_, err := fmt.Fprint(w, "IP successfully stored")
 		if err != nil {
 			fmt.Println("Error with request:", r)
@@ -89,8 +89,8 @@ func logip(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 	} else {
-		w.WriteHeader(500)
 		w.Header().Set("content-type", "text/plain")
+		w.WriteHeader(500)
 		fmt.Println("Error with request:", r)
 		fmt.Println("Error storing IP address to database")
 		_, err := fmt.Fprint(w, "Error storing IP address to database")
@@ -120,8 +120,8 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	w.WriteHeader(200)
 	w.Header().Set("content-type", "application/json")
+	w.WriteHeader(200)
 	_, err2 := w.Write(jinfo)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
@@ -172,7 +172,7 @@ func ipinfo(r *http.Request) *ipdata {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulatf := latf + 180 // -180/180 -> 0/360
+		ulatf := latf + 90 // -90/90 -> 0/180
 
 		//longitude
 		lonf, err := strconv.ParseFloat(data[1], 64)
@@ -180,7 +180,7 @@ func ipinfo(r *http.Request) *ipdata {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulonf := lonf + 90 // -90/90 -> 0/180
+		ulonf := lonf + 180 // -180/180 -> 0/360
 
 		//convert to uint
 		ulat := uint16(ulatf)
@@ -219,7 +219,7 @@ func ipinfo(r *http.Request) *ipdata {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulatf := latf + 180 // -180/180 -> 0/360
+		ulatf := latf + 90 // -90/90 -> 0/180
 
 		//longitude
 		lonf, err := strconv.ParseFloat(data[2], 64)
@@ -227,7 +227,7 @@ func ipinfo(r *http.Request) *ipdata {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulonf := lonf + 90 // -90/90 -> 0/180
+		ulonf := lonf + 180 // -180/180 -> 0/360
 
 		//convert to uint
 		ulat := uint16(ulatf)
@@ -307,8 +307,8 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		for _, e := range alldata {
 			newcircle := content[1]
 			//									   string from uint64 (uint64 from uint16)
-			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(int64(e.Ulat), 10), 1)
-			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(180-int64(e.Ulon), 10), 1)
+			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(180-int64(e.Ulat), 10), 1)
+			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(int64(e.Ulon), 10), 1)
 			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(circlesize, 'f', 4, 64), 1)
 			mapstring += newcircle
 		}
@@ -321,8 +321,8 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	w.WriteHeader(200)
 	w.Header().Set("content-type", "image/svg+xml")
+	w.WriteHeader(200)
 
 	_, err := fmt.Fprint(w, mapstring)
 	if err != nil {

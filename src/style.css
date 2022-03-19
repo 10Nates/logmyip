@@ -36,9 +36,14 @@ button {
     font-size: 1.2em;
 }
 
-.map {
+#map {
     width: 90vw;
+    margin: 0;
+    padding: 0;
     max-width: 40em;
+    background-image: url("blankmap.svg");
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 footer {
