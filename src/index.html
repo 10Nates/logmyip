@@ -45,9 +45,10 @@
             <p id="uip">Your IP: {{userip}}</p>
         </div>
         <br>
-        <form>
-            <button type="submit">Log My IP!</button>
+        <form id="ipform" method="post" action="/logip">
+            <button type="submit" name="confirm" value="yes">Log My IP!</button>
         </form>
+        <p id="formreturn"></p>
         <br>
         <div id="mapcontainer">
             <image class="map" src="/rendermap.svg" alt="map overlay" />
@@ -56,7 +57,8 @@
     </div>
     <br>
     <footer>
-        <p id="copyright">Copyright &copy; 2022 Nathan Hedge. <a class="pa" href="https://github.com/10nates/logmyip">licensed under the MIT license</a></p>
+        <p id="copyright">Copyright &copy; 2022 Nathan Hedge. <a class="pa" href="https://github.com/10nates/logmyip">Licensed under the MIT license</a></p>
+        <p><a class="pa" href="/src/privacypolicy.html">Privacy Policy</a></p>
     </footer>
 </body>
 

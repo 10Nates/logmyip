@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -23,8 +24,8 @@ var ctx = context.Background()
 func initdb() {
 	rdb = redis.NewClient(&redis.Options{
 		Addr:     "localhost:6379",
-		Password: "", // no password set
-		DB:       0,  // use default DB
+		Password: os.Getenv("RedisPass"),
+		DB:       0, // use default DB
 	})
 	fmt.Println("Database client connected")
 }
@@ -35,19 +36,19 @@ func pulldata(ip string) *storeipdata {
 	if err != nil {
 		return &storeipdata{e: false}
 	}
-	ulatp, err := strconv.ParseUint(val["ulat"], 10, 16)
+	ulatp, err := strconv.ParseUint(val["ulat"], 36, 16)
 	if err != nil {
 		return &storeipdata{e: false}
 	}
 	ulat := uint16(ulatp)
 
-	ulonp, err := strconv.ParseUint(val["ulon"], 10, 16)
+	ulonp, err := strconv.ParseUint(val["ulon"], 36, 16)
 	if err != nil {
 		return &storeipdata{e: false}
 	}
 	ulon := uint16(ulonp)
 
-	ts, err := strconv.ParseInt(val["ts"], 10, 64)
+	ts, err := strconv.ParseInt(val["ts"], 36, 64)
 	if err != nil {
 		return &storeipdata{e: false}
 	}
@@ -82,16 +83,16 @@ func storedata(data *storeipdata) bool {
 	if !data.e {
 		return false
 	}
-	ret := rdb.HSet(ctx, data.ip, "ulat", data.ulat, "ulon", data.ulon, "ts", data.ts)
-	res, err := ret.Result()
-	if err != nil {
-		return false
-	}
-	if res != 1 {
-		return false
-	} else {
-		return true
-	}
+
+	// convert to strings
+	ulat := strconv.FormatUint(uint64(data.ulat), 36)
+	ulon := strconv.FormatUint(uint64(data.ulon), 36)
+	ts := strconv.FormatInt(data.ts, 36)
+
+	ret := rdb.HSet(ctx, data.ip, map[string]interface{}{"ulat": ulat, "ulon": ulon, "ts": ts})
+	_, err := ret.Result()
+
+	return err == nil // return true if no error
 }
 
 func storeDataToIPData(storedata *storeipdata) *ipdata {

@@ -78,9 +78,22 @@ func logip(w http.ResponseWriter, r *http.Request) {
 	sdat := IPDatatoStoreData(data, ts)
 	success := storedata(sdat)
 	if success {
+		mapcache = mapcached{valid: false}
 		w.WriteHeader(200)
 		w.Header().Set("content-type", "text/plain")
 		_, err := fmt.Fprint(w, "IP successfully stored")
+		if err != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
+	} else {
+		w.WriteHeader(500)
+		w.Header().Set("content-type", "text/plain")
+		fmt.Println("Error with request:", r)
+		fmt.Println("Error storing IP address to database")
+		_, err := fmt.Fprint(w, "Error storing IP address to database")
 		if err != nil {
 			fmt.Println("Error with request:", r)
 			fmt.Println(err)
@@ -170,8 +183,8 @@ func ipinfo(r *http.Request) *ipdata {
 		ulonf := lonf + 90 // -90/90 -> 0/180
 
 		//convert to uint
-		ulat := uint16(ulatf + 180)
-		ulon := uint16(ulonf + 180)
+		ulat := uint16(ulatf)
+		ulon := uint16(ulonf)
 
 		retdata := &ipdata{
 			OK:   true,
@@ -217,8 +230,8 @@ func ipinfo(r *http.Request) *ipdata {
 		ulonf := lonf + 90 // -90/90 -> 0/180
 
 		//convert to uint
-		ulat := uint16(ulatf + 180)
-		ulon := uint16(ulonf + 180)
+		ulat := uint16(ulatf)
+		ulon := uint16(ulonf)
 
 		retdata := &ipdata{
 			OK:   true,
@@ -264,16 +277,13 @@ func cachedipinfo(r *http.Request) (*ipdata, int64) {
 //var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
 const circlesize = 2.5
 
-// path /rendermap
+// path /rendermap.svg
 func rendermapw(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
 		w.WriteHeader(405)
 		return
 	}
 	fmt.Println("Received request " + r.URL.String())
-
-	w.WriteHeader(200)
-	w.Header().Set("content-type", "image/svg+xml")
 
 	var mapstring string
 	// already rendered
@@ -294,11 +304,11 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		alldata := *pullall()
 
 		mapstring = content[0] // header
-		for i := 0; i < len(alldata); i++ {
+		for _, e := range alldata {
 			newcircle := content[1]
 			//									   string from uint64 (uint64 from uint16)
-			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatUint(uint64(alldata[i].Ulat), 10), 1)
-			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatUint(uint64(alldata[i].Ulon), 10), 1)
+			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(int64(e.Ulat), 10), 1)
+			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(180-int64(e.Ulon), 10), 1)
 			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(circlesize, 'f', 4, 64), 1)
 			mapstring += newcircle
 		}
@@ -309,19 +319,17 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 			valid: true,
 			cache: mapstring,
 		}
-		_, err2 := fmt.Fprint(w, mapstring)
-		if err2 != nil {
-			fmt.Println("Error with request:", r)
-			fmt.Println(err)
-			w.WriteHeader(500)
-		}
 	}
+
+	w.WriteHeader(200)
+	w.Header().Set("content-type", "image/svg+xml")
 
 	_, err := fmt.Fprint(w, mapstring)
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
 		w.WriteHeader(500)
+		return
 	}
 }
 
