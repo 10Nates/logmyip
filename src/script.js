@@ -1,7 +1,7 @@
 function eID(id) { return document.getElementById(id) }
 
 async function init() {
-    const useripinfofetch = await fetch("http://" + window.location.host + "/ipinfo", {method: "post"})
+    const useripinfofetch = await fetch("https://" + window.location.host + "/ipinfo", {method: "post"})
     const useripinfo = useripinfofetch.ok ? await useripinfofetch.json() : {ok: false}
     const uip = eID("uip")
     
