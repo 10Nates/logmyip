@@ -32,7 +32,12 @@ button {
     font-weight: bold;
 }
 
+#uip {
+    margin-top: 0;
+}
+
 #content {
+    padding-top: 5em;
     font-size: 1.2em;
 }
 
