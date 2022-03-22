@@ -35,9 +35,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 		return
 	}
-	fmt.Println("Received request " + r.URL.String())
 
-	content, err := ioutil.ReadFile("src/index.html")
+	go countVisits()
+
+	content, err := ioutil.ReadFile("plate/index.html")
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
@@ -61,7 +62,7 @@ func logip(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 		return
 	}
-	fmt.Println("Received request " + r.URL.String())
+
 	err := r.ParseForm()
 	if err != nil {
 		fmt.Println("Error with request:", r)
@@ -70,7 +71,7 @@ func logip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	conf := r.FormValue("confirm")
-	if conf != "yes" {
+	if conf != "yes" || r.Referer() != "https://logmyip.com/" {
 		w.WriteHeader(406)
 		return
 	}
@@ -81,6 +82,7 @@ func logip(w http.ResponseWriter, r *http.Request) {
 		mapcache = mapcached{valid: false}
 		w.Header().Set("content-type", "text/plain")
 		w.WriteHeader(200)
+		fmt.Println("Logged IP - " + data.IP)
 		_, err := fmt.Fprint(w, "IP successfully stored")
 		if err != nil {
 			fmt.Println("Error with request:", r)
@@ -109,7 +111,6 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 		return
 	}
-	fmt.Println("Received request " + r.URL.String())
 
 	info, _ := cachedipinfo(r)
 
@@ -275,7 +276,7 @@ func cachedipinfo(r *http.Request) (*ipdata, int64) {
 }
 
 //var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
-const circlesize = 2.5
+const circlesize = 2
 
 // path /rendermap.svg
 func rendermapw(w http.ResponseWriter, r *http.Request) {
@@ -283,7 +284,6 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 		return
 	}
-	fmt.Println("Received request " + r.URL.String())
 
 	var mapstring string
 	// already rendered
@@ -291,7 +291,7 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		mapstring = mapcache.cache
 	} else {
 		// get template
-		contentb, err := ioutil.ReadFile("src/maptemplate.svg")
+		contentb, err := ioutil.ReadFile("plate/maptemplate.svg")
 		if err != nil {
 			fmt.Println("Error with request:", r)
 			fmt.Println(err)

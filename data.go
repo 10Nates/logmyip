@@ -114,6 +114,10 @@ func IPDatatoStoreData(data *ipdata, timestamp int64) *storeipdata {
 	}
 }
 
+func countVisits() {
+	rdb.Incr(ctx, "visits")
+}
+
 // utility
 
 func getTS() int64 {
