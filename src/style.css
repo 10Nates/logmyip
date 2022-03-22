@@ -59,6 +59,16 @@ footer {
     font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", sans-serif;
 }
 
+#footfire {
+    position: fixed;
+    bottom: 3.5em;
+    width: 100%;
+    height: 2em;
+    background-image: url("BurningFlame.webp");
+    background-size: contain;
+    background-repeat: repeat-x;
+}
+
 .pa {
     color: white;
     text-decoration: none;
