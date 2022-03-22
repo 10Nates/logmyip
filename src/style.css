@@ -62,3 +62,15 @@ footer {
     color: white;
     text-decoration: none;
 }
+
+#logo {
+    display: inline-block;
+    height: 2em;
+    margin-right: 1em;
+    position: relative;
+    top: 0.2em;
+}
+
+#title {
+    display: inline-block;
+}
