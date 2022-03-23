@@ -74,6 +74,13 @@ footer {
     text-decoration: none;
 }
 
+.hf {
+    opacity: 0.5;
+    padding-left: 1em;
+    padding-right: 1em;
+    display: inline-block;
+}
+
 #logo {
     display: inline-block;
     height: 2em;

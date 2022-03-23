@@ -27,6 +27,8 @@ func handlers() {
 	http.HandleFunc("/", home)
 	http.HandleFunc("/ipinfo", ipinfow)
 	http.HandleFunc("/logip", logip)
+	http.HandleFunc("/unlog", unlogpage)
+	http.HandleFunc("/unlogip", unlogip)
 	http.HandleFunc("/rendermap.svg", rendermapw)
 
 }

@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Log My IP</title>
+    <title>Unlog My IP</title>
 
     <meta name="author" content="Nathan Hedge">
     <meta property="twitter:creator" content="@Nate494f">
@@ -28,39 +27,14 @@
     <link rel="icon" href="src/logo/logo.ico" type="image/x-icon">
     <link rel="shortcut icon" href="src/logo/logo.png">
 
-    <link rel="stylesheet" href="src/style.css">
-    <script src="src/script.js" defer></script>
+    <link rel="stylesheet" href="src/unlog/style.css">
+    <script src="src/unlog/script.js" defer></script>
 </head>
-
 <body>
-    <header>
-        <img id="logo" src="src/logo/logo.svg" alt="logo" />
-        <h1 id="title">Log My IP</h1>
-    </header>
-    <br>
-    <div id="content">
-        <p>Log your own IP - <span class="i">willingly!</span></p>
-        <br>
-        <div id="info">
-            <p id="uip">Your IP: {{userip}}</p>
-        </div>
-        <br>
-        <form id="ipform" method="post" action="/logip">
-            <button type="submit" name="confirm" value="yes">Log My IP!</button>
-        </form>
-        <p id="formreturn"></p>
-        <br>
-        <div id="mapcontainer">
-            <image id="map" src="/rendermap.svg" alt="geolocation map" />
-        </div>
+    <div id="top">
+        <h1 id="title">Unlog My IP</h1>
+        <div id="comp"></div>
+        <div id="flop"></div>
     </div>
-    <br>
-    <div id="footfire"></div>
-    <footer>
-        <p id="copyright">Copyright &copy; 2022 Nathan Hedge. <a class="pa" href="https://github.com/10nates/logmyip">Licensed under the MIT license</a></p>
-        <p class="hf"><a class="pa" href="/src/privacypolicy.html">Privacy Policy</a></p>
-        <p class="hf"><a class="pa" href="/unlog">Unlog My IP</a></p>
-    </footer>
 </body>
-
 </html>

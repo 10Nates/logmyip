@@ -1,0 +1,25 @@
+body {
+    background-color: navy;
+    color: white;
+    font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", sans-serif;
+    text-align: center;
+}
+
+#comp, #flop {
+    height: 100vh;
+    width: 4em;
+    position: absolute;
+    top: 0;
+    background-size: contain;
+    background-repeat: repeat-y;
+}
+
+#comp {
+    left: 0;
+    background-image: url("computer.webp");
+}
+
+#flop {
+    right: 0;
+    background-image: url("floppy.webp");
+}

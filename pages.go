@@ -45,9 +45,10 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
+	contentpip := strings.Replace(string(content), "{{userip}}", getIP(r), 1) // replace
 	w.Header().Set("content-type", "text/html")
 	w.WriteHeader(200)
-	_, err2 := w.Write(content)
+	_, err2 := fmt.Fprint(w, contentpip)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
@@ -354,4 +355,38 @@ func deleteOldCache() {
 		}
 	}
 	ipcache = newipcache
+}
+
+// path /unlog (frontend)
+func unlogpage(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "GET" {
+		w.WriteHeader(405)
+		return
+	}
+
+	content, err := ioutil.ReadFile("plate/unlog.html")
+	if err != nil {
+		fmt.Println("Error with request:", r)
+		fmt.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	w.Header().Set("content-type", "text/html")
+	w.WriteHeader(200)
+	_, err2 := w.Write(content)
+	if err2 != nil {
+		fmt.Println("Error with request:", r)
+		fmt.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+}
+
+// path /unlogip (api)
+func unlogip(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(405)
+		return
+	}
+	w.WriteHeader(500)
 }
