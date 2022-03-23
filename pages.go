@@ -420,6 +420,7 @@ func unlogip(w http.ResponseWriter, r *http.Request) {
 	userip := getIP(r)
 	success := removeip(userip)
 	if success {
+		mapcache = mapcached{valid: false}
 		w.WriteHeader(200)
 		fmt.Println("Removed IP - " + userip)
 		_, err := fmt.Fprint(w, "IP successfully removed")
