@@ -45,7 +45,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	contentpip := strings.Replace(string(content), "{{userip}}", getIP(r), 1) // replace
+	contentpip := strings.Replace(string(content), "{{userip}}", getIP(r), 1) // show ip
 	w.Header().Set("content-type", "text/html")
 	w.WriteHeader(200)
 	_, err2 := fmt.Fprint(w, contentpip)
@@ -72,7 +72,7 @@ func logip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	conf := r.FormValue("confirm")
-	if conf != "yes" || r.Referer() != "https://logmyip.com/" {
+	if conf != "yes" || !goodRefer(r) {
 		w.WriteHeader(406)
 		return
 	}
@@ -357,6 +357,11 @@ func deleteOldCache() {
 	ipcache = newipcache
 }
 
+//internal
+func goodRefer(r *http.Request) bool {
+	return strings.HasPrefix(r.Referer(), "https://logmyip.com")
+}
+
 // path /unlog (frontend)
 func unlogpage(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "GET" {
@@ -371,9 +376,20 @@ func unlogpage(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
+	userip := getIP(r)
+
+	var isLogged string
+	if pulldata(userip).e { // if exists
+		isLogged = "yes"
+	} else {
+		isLogged = "no"
+	}
+
+	contentpip := strings.Replace(string(content), "{{userip}}", userip, 1)       // show ip
+	contentpip = strings.Replace(string(contentpip), "{{islogged}}", isLogged, 1) // let user know if ip is logged
 	w.Header().Set("content-type", "text/html")
 	w.WriteHeader(200)
-	_, err2 := w.Write(content)
+	_, err2 := fmt.Fprint(w, contentpip)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
@@ -388,5 +404,42 @@ func unlogip(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(405)
 		return
 	}
-	w.WriteHeader(500)
+
+	err := r.ParseForm()
+	if err != nil {
+		fmt.Println("Error with request:", r)
+		fmt.Println(err)
+		w.WriteHeader(500)
+		return
+	}
+	conf := r.FormValue("confirmunlog") // differentiate from logip
+	if conf != "yes" || !goodRefer(r) {
+		w.WriteHeader(406)
+		return
+	}
+	userip := getIP(r)
+	success := removeip(userip)
+	if success {
+		w.WriteHeader(200)
+		fmt.Println("Removed IP - " + userip)
+		_, err := fmt.Fprint(w, "IP successfully removed")
+		if err != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
+	} else {
+		w.Header().Set("content-type", "text/plain")
+		w.WriteHeader(500)
+		fmt.Println("Error with request:", r)
+		fmt.Println("Error removing IP address from database")
+		_, err := fmt.Fprint(w, "Error removing IP address from database")
+		if err != nil {
+			fmt.Println("Error with request:", r)
+			fmt.Println(err)
+			w.WriteHeader(500)
+			return
+		}
+	}
 }

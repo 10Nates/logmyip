@@ -1,11 +1,15 @@
 body {
-    background-color: navy;
+    margin: 0;
+    background-image: url("euflag.svg");
+    background-size: 2em;
+
     color: white;
     font-family: "Comic Sans MS", "Comic Sans", "Chalkboard SE", sans-serif;
     text-align: center;
 }
 
-#comp, #flop {
+#comp,
+#flop {
     height: 100vh;
     width: 4em;
     position: absolute;
@@ -22,4 +26,48 @@ body {
 #flop {
     right: 0;
     background-image: url("floppy.webp");
+}
+
+#content {
+    background-color: rgba(200, 0, 255, 0.5);
+    margin-left: 5em;
+    margin-right: 5em;
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.il {
+    font-style: italic;
+}
+
+footer {
+    position: fixed;
+    background: black;
+    color: white;
+    padding: 0.5em;
+    font-size: 0.5em;
+    bottom: 0;
+    width: 100%;
+}
+
+#footfire {
+    position: fixed;
+    bottom: 3.5em;
+    width: 100%;
+    height: 2em;
+    background-image: url("../BurningFlame.webp");
+    background-size: contain;
+    background-repeat: repeat-x;
+}
+
+.pa {
+    color: white;
+    text-decoration: none;
+}
+
+.hf {
+    opacity: 0.5;
+    padding-left: 1em;
+    padding-right: 1em;
+    display: inline-block;
 }

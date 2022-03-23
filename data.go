@@ -95,6 +95,14 @@ func storedata(data *storeipdata) bool {
 	return err == nil // return true if no error
 }
 
+func removeip(ip string) bool {
+	res, err := rdb.Del(ctx, ip).Result()
+	if err != nil || res != 1 {
+		return false
+	}
+	return true
+}
+
 func storeDataToIPData(storedata *storeipdata) *ipdata {
 	return &ipdata{
 		OK:   storedata.e,

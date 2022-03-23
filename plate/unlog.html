@@ -28,6 +28,9 @@
     <link rel="shortcut icon" href="src/logo/logo.png">
 
     <link rel="stylesheet" href="src/unlog/style.css">
+    <script>
+        const isLogged="{{islogged}}" 
+    </script>
     <script src="src/unlog/script.js" defer></script>
 </head>
 <body>
@@ -37,7 +40,27 @@
         <div id="flop"></div>
     </div>
     <div id="content">
-        <p>I haven't finished this page. Come back later.</p>
+        <p>Don't want your IP on the map anymore?</p>
+        <p>Don't worry! It's removable - <span class="il">by law!</span></p>
+        <br>
+        <h2>Your IP: {{userip}}</h2>
+        <h2 id="status">Your IP is currently LOADING...</h2>
+        <br>
+        <div id="removeField" style="display: none;">
+            <a href="javascript:unlogForm();">Unlog my IP!</a>
+        </div>
+        <br>
+        <p id="formreturn"></p>
+        <br>
+        <br>
+        <p>If your IP has changed, it cannot be removed automatically. <br>If you would still like to remove it, please email <a href="mailto:support@logmyip.com?subject=IP%20deletion%20request">support@logmyip.com</a>.</p>
     </div>
+
+    <div id="footfire"></div>
+    <footer>
+        <p id="copyright">Copyright &copy; 2022 Nathan Hedge. <a class="pa" href="https://github.com/10nates/logmyip">Licensed under the MIT license.</a></p>
+        <p class="hf"><a class="pa" href="/src/privacypolicy.html">Privacy Policy</a></p>
+        <p class="hf"><a class="pa" href="/">Log My IP</a></p>
+    </footer>
 </body>
 </html>
