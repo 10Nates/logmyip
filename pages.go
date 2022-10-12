@@ -3,8 +3,9 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 	"strings"
 )
@@ -38,7 +39,7 @@ func home(w http.ResponseWriter, r *http.Request) {
 
 	go countVisits()
 
-	content, err := ioutil.ReadFile("plate/index.html")
+	content, err := os.ReadFile("plate/index.html")
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
@@ -156,7 +157,7 @@ func ipinfo(r *http.Request) *ipdata {
 			fmt.Println("Both services returned non-200")
 			return &ipdata{OK: false}
 		}
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			return &ipdata{OK: false}
@@ -204,7 +205,7 @@ func ipinfo(r *http.Request) *ipdata {
 	} else {
 
 		//read content
-		body, err := ioutil.ReadAll(res.Body)
+		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			return &ipdata{OK: false}
@@ -276,7 +277,7 @@ func cachedipinfo(r *http.Request) (*ipdata, int64) {
 	}
 }
 
-//var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
+// var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
 const circlesize = 2
 
 // path /rendermap.svg
@@ -292,7 +293,7 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		mapstring = mapcache.cache
 	} else {
 		// get template
-		contentb, err := ioutil.ReadFile("plate/maptemplate.svg")
+		contentb, err := os.ReadFile("plate/maptemplate.svg")
 		if err != nil {
 			fmt.Println("Error with request:", r)
 			fmt.Println(err)
@@ -357,7 +358,7 @@ func deleteOldCache() {
 	ipcache = newipcache
 }
 
-//internal
+// internal
 func goodRefer(r *http.Request) bool {
 	return strings.HasPrefix(r.Referer(), "https://logmyip.com")
 }
@@ -369,7 +370,7 @@ func unlogpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	content, err := ioutil.ReadFile("plate/unlog.html")
+	content, err := os.ReadFile("plate/unlog.html")
 	if err != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
