@@ -1,14 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 180" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
-    <defs><radialGradient id="g">
-      <stop offset="0%" style="stop-color:#0098ff;stop-opacity:1" />
-      <stop offset="4%" style="stop-color:#0098ff;stop-opacity:0.7" />
-      <stop offset="10%" style="stop-color:#0098ff;stop-opacity:0.5" />
-      <stop offset="20%" style="stop-color:#0098ff;stop-opacity:0.35" />
-      <stop offset="40%" style="stop-color:#0098ff;stop-opacity:0.2" />
-      <stop offset="100%" style="stop-color:#0098ff;stop-opacity:0" />
-    </radialGradient></defs>
-
     <!--template-->
-    <circle cx="{ulon}" cy="{ulat}" r="{size}" fill="url(#g)" fill-opacity=".5"/>
+    <rect x="{ulonm}" y="{ulatm}" width="{size}" height="{size}" fill-opacity=".5"/>
     <!--template-->
 </svg>
