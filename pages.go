@@ -311,7 +311,7 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 			//									   string from uint64 (uint64 from uint16)
 			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(180-int64(e.Ulat)-1, 10), 1) // -1 to center rectangle
 			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(int64(e.Ulon)-1, 10), 1)     // -1 to center rectangle
-			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(pointsize, 'f', 1, 64), 1)
+			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(pointsize, 'f', 1, 64), 2)
 			mapstring += newcircle
 		}
 		mapstring += content[2]
