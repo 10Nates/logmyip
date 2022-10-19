@@ -30,3 +30,29 @@ function silenceForm() {
 
 silenceForm()
 //init() replaced internally
+
+
+// All of this is just for magnification
+var magnifier = 1
+const docEl = document.documentElement
+
+function decreaseMagnify() {
+    magnifier *= 0.9
+    if (magnifier < 1) magnifier = 1
+    docEl.style.setProperty("--magnify-scale", magnifier)
+}
+
+function increaseMagnify() {
+    magnifier *= 1.1
+    docEl.style.setProperty("--magnify-scale", magnifier)
+}
+
+function openBigMap() {
+    eID("mapbig").style.setProperty("display", "block")
+    eID("magnifyoptions").style.setProperty("display", "block")
+}
+
+function closeBigMap() {
+    eID("mapbig").style.setProperty("display", "none")
+    eID("magnifyoptions").style.setProperty("display", "none")
+}

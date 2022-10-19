@@ -1,3 +1,7 @@
+:root {
+    --magnify-scale: 1;
+}
+
 body {
     margin: 0;
     text-align: center;
@@ -45,8 +49,6 @@ button {
 
 #map {
     width: 90vw;
-    margin: 0;
-    padding: 0;
     max-width: 40em;
     background-image: url("blankmap.svg");
     background-repeat: no-repeat;
@@ -57,10 +59,7 @@ button {
     position: absolute;
     z-index: 1;
     top: 5em;
-    left: 0;
-    width: 200vw;
-    margin: 0;
-    padding: 0;
+    height: calc(var(--magnify-scale) * 100vh - 8em);
     background-color: white;
     background-image: url("blankmap.svg");
     background-repeat: no-repeat;
@@ -72,11 +71,33 @@ button {
     display: block;
 }
 
+#mapcontainer {
+    position: relative;
+}
+
 #magnify {
     height: 1em;
-    margin: 0.1em;
-    position: relative;
-    right: 1.2em;
+    position: absolute;
+    display: grid;
+    bottom: 0.5em;
+    left: 50%;
+    transform: translateX(-50%)
+}
+
+#magnifyoptions {
+    position: fixed;
+    top: 4em;
+    right: 0.5em;
+    z-index: 3;
+    border: 0.1em solid #0098ff;
+    color: white;
+    background: black;
+    font-size: 1.5em;
+    display: none;
+}
+
+#magnifyoptions span {
+    padding: 0 0.6em 0 0.6em;
 }
 
 footer {
