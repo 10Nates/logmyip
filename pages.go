@@ -278,7 +278,7 @@ func cachedipinfo(r *http.Request) (*ipdata, int64) {
 }
 
 // var svgre = regexp.MustCompile("(<svg[\\s\\S]+?)<!--(.+?)-->([\\s\\S]+?svg>)") //$1 is head, $2 is circle template, $3 is foot
-const pointsize = 3
+const pointsize = 1.5 // diameter 3
 
 // path /rendermap.svg
 func rendermapw(w http.ResponseWriter, r *http.Request) {
@@ -309,9 +309,9 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		for _, e := range alldata {
 			newcircle := content[1]
 			//									   string from uint64 (uint64 from uint16)
-			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(180-int64(e.Ulat)-1, 10), 1) // -1 to center rectangle
-			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(int64(e.Ulon)-1, 10), 1)     // -1 to center rectangle
-			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(pointsize, 'f', 1, 64), 2)
+			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(180-int64(e.Ulat), 10), 1) // -1 to center rectangle
+			newcircle = strings.Replace(newcircle, "{ulon}", strconv.FormatInt(int64(e.Ulon), 10), 1)     // -1 to center rectangle
+			newcircle = strings.Replace(newcircle, "{size}", strconv.FormatFloat(pointsize, 'f', -1, 64), 1)
 			mapstring += newcircle
 		}
 		mapstring += content[2]
