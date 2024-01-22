@@ -32,12 +32,11 @@ var mapcache = mapcached{valid: false}
 
 // path /
 func home(w http.ResponseWriter, r *http.Request) {
-	w.Header().Del("x-csp-nonce") // not needed
-
 	if r.Method != "GET" {
 		w.WriteHeader(405)
 		return
 	}
+	// path / is a catchall in net/http so this has to be sorted out
 	if r.RequestURI != "/" {
 		w.WriteHeader(404)
 		return
