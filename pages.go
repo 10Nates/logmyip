@@ -1,8 +1,6 @@
 package main
 
 import (
-	"crypto/rand"
-	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -378,17 +376,6 @@ func unlogpage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// make nonce for applying isLogged
-	b := make([]byte, 16) // 16 * 8 = 128 bits of security (standard)
-	_, err := rand.Read(b)
-	if err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	nonce := base64.StdEncoding.EncodeToString(b)
-	csp := fmt.Sprintf("default-src 'self'; script-src 'self' 'nonce-%s';", nonce)
-	w.Header().Set("Content-Security-Policy", csp)
-
 	content, err := os.ReadFile("plate/unlog.html")
 	if err != nil {
 		fmt.Println("Error with request:", r)
@@ -407,7 +394,6 @@ func unlogpage(w http.ResponseWriter, r *http.Request) {
 
 	contentpip := strings.Replace(string(content), "{{userip}}", userip, 1)       // show ip
 	contentpip = strings.Replace(string(contentpip), "{{islogged}}", isLogged, 1) // let user know if ip is logged
-	contentpip = strings.Replace(string(contentpip), "{{nonce}}", nonce, 1)
 	w.Header().Set("content-type", "text/html")
 	w.WriteHeader(200)
 	_, err2 := fmt.Fprint(w, contentpip)

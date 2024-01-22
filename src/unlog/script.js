@@ -1,5 +1,7 @@
 function eID(id) { return document.getElementById(id) }
 
+const isLogged = document.body.attributes.isLogged.value
+
 if (isLogged==="yes") {
     eID("status").innerHTML = eID("status").innerHTML.replace("LOADING...", "logged.")
     eID("removeField").style.display = "inherit"
