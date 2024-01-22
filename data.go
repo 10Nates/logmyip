@@ -22,8 +22,12 @@ var rdb *redis.Client
 var ctx = context.Background()
 
 func initdb() {
+	// addr := os.Getenv("RedisAddr")
+	// if addr == "" {
+	// 	addr = "localhost:6379" // Use default Redis address if not provided
+	// }
 	rdb = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     os.Getenv("RedisAddr"),
 		Password: os.Getenv("RedisPass"),
 		DB:       0, // use default DB
 	})
