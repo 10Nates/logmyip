@@ -71,3 +71,7 @@ footer {
     padding-right: 1em;
     display: inline-block;
 }
+
+#removeField {
+    display: none;
+}

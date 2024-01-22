@@ -38,7 +38,7 @@
         <h1 id="title">Log My IP</h1>
     </header>
     <div id="magnifyoptions">
-        <span onclick="decreaseMagnify()">-</span><span onclick="increaseMagnify()">+</span>
+        <span id="decreasemag">-</span><span id="increasemag">+</span>
     </div>
     <br>
     <div id="content">
@@ -55,9 +55,9 @@
         <br>
         <div id="mapcontainer">
             <image id="map" src="/rendermap.svg" alt="geolocation map" />
-            <image id="magnify" src="src/magnify.svg" alt="magnify button" onclick="openBigMap()" />
+            <image id="magnify" src="src/magnify.svg" alt="magnify button" />
         </div>
-        <image id="mapbig" src="/rendermap.svg" alt="geolocation map" onclick="closeBigMap()" />
+        <image id="mapbig" src="/rendermap.svg" alt="geolocation map" />
     </div>
     <br>
     <footer>

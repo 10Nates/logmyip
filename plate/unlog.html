@@ -28,7 +28,7 @@
     <link rel="shortcut icon" href="src/logo/logo.png">
 
     <link rel="stylesheet" href="src/unlog/style.css">
-    <script>
+    <script nonce="{{nonce}}">
         const isLogged="{{islogged}}" 
     </script>
     <script src="src/unlog/script.js" defer></script>
@@ -46,8 +46,8 @@
         <h2>Your IP: {{userip}}</h2>
         <h2 id="status">Your IP is currently LOADING...</h2>
         <br>
-        <div id="removeField" style="display: none;">
-            <a href="javascript:unlogForm();">Unlog my IP!</a>
+        <div id="removeField">
+            <a id="unlogFormBtn" href="#">Unlog my IP!</a>
         </div>
         <br>
         <p id="formreturn"></p>

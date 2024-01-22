@@ -56,3 +56,10 @@ function closeBigMap() {
     eID("mapbig").style.setProperty("display", "none")
     eID("magnifyoptions").style.setProperty("display", "none")
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    eID("decreasemag").onclick = decreaseMagnify
+    eID("increasemag").onclick = increaseMagnify
+    eID("magnify").onclick= openBigMap
+    eID("mapbig").onclick = closeBigMap
+})

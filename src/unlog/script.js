@@ -26,3 +26,5 @@ function unlogForm() {
         }
       });
 }
+
+eID("unlogFormBtn").onclick = unlogForm
