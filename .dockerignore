@@ -82,6 +82,13 @@ Temporary Items
 
 todo
 .gitignore
-.git/
 /dist
+
+# unnecessary for operation
+.git/
 .dockerignore
+docker-compose.yml
+Dockerfile
+README.md
+LICENSE
+

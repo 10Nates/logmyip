@@ -12,10 +12,15 @@ services:
       - db
   
   db:
-    image: redis:alpine
-    command: redis-server --save 10 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    image: bitnami/redis:latest
+    #command: redis-server --save 10 1 --loglevel warning --requirepass ${REDIS_PASSWORD}
+    command: /opt/bitnami/scripts/redis/run.sh --save 10 1 --loglevel warning
+    environment:
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
+      - REDIS_AOF_ENABLED=no
     volumes:
-      - lmip_db:/data
+      - lmip_db:/bitnami/redis/data
   
 volumes:
   lmip_db:
