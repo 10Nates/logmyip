@@ -82,7 +82,8 @@ Temporary Items
 
 todo
 .gitignore
-/dist
+dist/
+lmip_db/
 
 # unnecessary for operation
 .git/

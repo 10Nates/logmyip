@@ -20,7 +20,7 @@ services:
       - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL,CONFIG
       - REDIS_AOF_ENABLED=no
     volumes:
-      - lmip_db:/bitnami/redis/data
+      - ./lmip_db:/bitnami/redis/data
   
 volumes:
   lmip_db:
