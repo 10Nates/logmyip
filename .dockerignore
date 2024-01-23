@@ -68,12 +68,7 @@ Temporary Items
 .apdisk
 
 ### VisualStudioCode ###
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-*.code-workspace
+.vscode/
 
 # Local History for Visual Studio Code
 .history/
@@ -83,12 +78,10 @@ Temporary Items
 .history
 .ionide
 
-# Support for Project snippet scope
-!.vscode/*.code-snippets
-
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode,go,git
 
-.gitignore
 todo
+.gitignore
+.git/
 /dist
-
+.dockerignore
