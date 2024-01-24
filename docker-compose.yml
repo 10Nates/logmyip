@@ -10,6 +10,10 @@ services:
       - RedisPass=${REDIS_PASSWORD}
     depends_on:
       - db
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
   
   db:
     image: bitnami/redis:latest
@@ -21,6 +25,10 @@ services:
       - REDIS_AOF_ENABLED=no
     volumes:
       - ./lmip_db:/bitnami/redis/data
+    deploy:
+      restart_policy:
+        condition: any
+        delay: 5s
   
 volumes:
   lmip_db:
