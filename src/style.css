@@ -131,3 +131,8 @@ footer {
 #title {
     display: inline-block;
 }
+
+#numlogged {
+    font-size: 0.7em;
+    color: #444;
+}

@@ -29,6 +29,7 @@ type mapcached struct {
 
 var ipcache = []cachedip{}
 var mapcache = mapcached{valid: false}
+var numips = -1 // Initalization only number
 
 // path /
 func home(w http.ResponseWriter, r *http.Request) {
@@ -42,6 +43,12 @@ func home(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if numips == -1 { // Only on first visit
+		alldata := *pullall()
+
+		numips = len(alldata) - 1 // There is only 1 non-IP item in the dataset
+	}
+
 	go countVisits()
 
 	content, err := os.ReadFile("plate/index.html")
@@ -51,10 +58,11 @@ func home(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(500)
 		return
 	}
-	contentpip := strings.Replace(string(content), "{{userip}}", getIP(r), 1) // show ip
+	contentpip := strings.Replace(string(content), "{{userip}}", getIP(r), 1)           // show ip
+	contentwnip := strings.Replace(contentpip, "{{numips}}", strconv.Itoa(numips-1), 1) // number of users (-1 because it says "OVER x IPs")
 	w.Header().Set("content-type", "text/html")
 	w.WriteHeader(200)
-	_, err2 := fmt.Fprint(w, contentpip)
+	_, err2 := fmt.Fprint(w, contentwnip)
 	if err2 != nil {
 		fmt.Println("Error with request:", r)
 		fmt.Println(err)
@@ -310,8 +318,14 @@ func rendermapw(w http.ResponseWriter, r *http.Request) {
 		// pull from database
 		alldata := *pullall()
 
+		numips = len(alldata) - 1 // There is only 1 non-IP item in the dataset
+
 		mapstring = content[0] // header
 		for _, e := range alldata {
+			if !e.OK { // non-IP items in dataset
+				continue
+			}
+
 			newcircle := content[1]
 			//									   string from uint64 (uint64 from uint16)
 			newcircle = strings.Replace(newcircle, "{ulat}", strconv.FormatInt(180-int64(e.Ulat), 10), 1) // -1 to center rectangle
