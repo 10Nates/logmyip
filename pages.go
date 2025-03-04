@@ -148,59 +148,56 @@ func ipinfow(w http.ResponseWriter, r *http.Request) {
 }
 
 // internal
+func parseLatLon(latstr string, lonstr string) (uint16, uint16, error) {
+	//latitude
+	latf, err := strconv.ParseFloat(latstr, 64)
+	if err != nil {
+		fmt.Println(err)
+		return 0, 0, err
+	}
+	ulatf := latf + 90 // -90/90 -> 0/180
+
+	//longitude
+	lonf, err := strconv.ParseFloat(lonstr, 64)
+	if err != nil {
+		fmt.Println(err)
+		return 0, 0, err
+	}
+	ulonf := lonf + 180 // -180/180 -> 0/360
+
+	//convert to uint
+	return uint16(ulatf), uint16(ulonf), nil
+}
+
+// internal
 func ipinfo(r *http.Request) *ipdata {
 	userIP := getIP(r)
 
-	// first service - 45 req/min
-	res, err := http.Get("http://ip-api.com/line/" + userIP + "?fields=16576")
+	// first service - 50K req/month
+	res, err := http.Get("https://ipinfo.io/" + userIP + "/loc")
 	if err != nil {
 		fmt.Println(err)
 		return &ipdata{OK: false}
 	}
-
-	// too many requests
-	if res.StatusCode != 200 {
-		// second service - 1000 req/day
-		res2, err := http.Get("https://ipapi.co/" + userIP + "/latlong")
-		if err != nil {
-			fmt.Println(err)
-			return &ipdata{OK: false}
-		}
-		if res2.StatusCode != 200 {
-			fmt.Println("Both services returned non-200")
-			return &ipdata{OK: false}
-		}
+	if res.StatusCode == 200 {
 		body, err := io.ReadAll(res.Body)
 		if err != nil {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		data := strings.Split(string(body), ",")
+		trimbody := strings.TrimSpace(string(body))
+		data := strings.Split(trimbody, ",")
 		// something is wrong
 		if data[0] == "" || data[1] == "" {
 			fmt.Println("Something is wrong ->", res)
 			return &ipdata{OK: false}
 		}
 
-		//latitude
-		latf, err := strconv.ParseFloat(data[0], 64)
+		ulat, ulon, err := parseLatLon(data[0], data[1])
 		if err != nil {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulatf := latf + 90 // -90/90 -> 0/180
-
-		//longitude
-		lonf, err := strconv.ParseFloat(data[1], 64)
-		if err != nil {
-			fmt.Println(err)
-			return &ipdata{OK: false}
-		}
-		ulonf := lonf + 180 // -180/180 -> 0/360
-
-		//convert to uint
-		ulat := uint16(ulatf)
-		ulon := uint16(ulonf)
 
 		retdata := &ipdata{
 			OK:   true,
@@ -215,7 +212,55 @@ func ipinfo(r *http.Request) *ipdata {
 		})
 
 		return retdata
-	} else {
+	}
+
+	// second service - 1000 req/day
+	res, err = http.Get("https://ipapi.co/" + userIP + "/latlong")
+	if err != nil {
+		fmt.Println(err)
+		return &ipdata{OK: false}
+	}
+	if res.StatusCode == 200 {
+		body, err := io.ReadAll(res.Body)
+		if err != nil {
+			fmt.Println(err)
+			return &ipdata{OK: false}
+		}
+		data := strings.Split(string(body), ",")
+		// something is wrong
+		if data[0] == "" || data[1] == "" {
+			fmt.Println("Something is wrong ->", res)
+			return &ipdata{OK: false}
+		}
+
+		ulat, ulon, err := parseLatLon(data[0], data[1])
+		if err != nil {
+			fmt.Println(err)
+			return &ipdata{OK: false}
+		}
+
+		retdata := &ipdata{
+			OK:   true,
+			IP:   userIP,
+			Ulat: ulat,
+			Ulon: ulon,
+		}
+
+		ipcache = append(ipcache, cachedip{
+			data: *retdata,
+			ts:   getTS(),
+		})
+
+		return retdata
+	}
+
+	// third service - 45 req/min - no https
+	res, err = http.Get("http://ip-api.com/line/" + userIP + "?fields=16576")
+	if err != nil {
+		fmt.Println(err)
+		return &ipdata{OK: false}
+	}
+	if res.StatusCode == 200 {
 
 		//read content
 		body, err := io.ReadAll(res.Body)
@@ -229,25 +274,11 @@ func ipinfo(r *http.Request) *ipdata {
 			return &ipdata{OK: false}
 		}
 
-		//latitude
-		latf, err := strconv.ParseFloat(data[1], 64)
+		ulat, ulon, err := parseLatLon(data[1], data[2])
 		if err != nil {
 			fmt.Println(err)
 			return &ipdata{OK: false}
 		}
-		ulatf := latf + 90 // -90/90 -> 0/180
-
-		//longitude
-		lonf, err := strconv.ParseFloat(data[2], 64)
-		if err != nil {
-			fmt.Println(err)
-			return &ipdata{OK: false}
-		}
-		ulonf := lonf + 180 // -180/180 -> 0/360
-
-		//convert to uint
-		ulat := uint16(ulatf)
-		ulon := uint16(ulonf)
 
 		retdata := &ipdata{
 			OK:   true,
@@ -263,6 +294,9 @@ func ipinfo(r *http.Request) *ipdata {
 
 		return retdata
 	}
+
+	fmt.Println("All services returned non-200")
+	return &ipdata{OK: false}
 }
 
 // internal
@@ -360,7 +394,7 @@ func getIP(r *http.Request) string {
 	if forwarded != "" {
 		return forwarded
 	}
-	if strings.Contains(r.RemoteAddr, "[::1]") {
+	if strings.Contains(r.RemoteAddr, "192.168.65.1") {
 		return "1.1.1.1" // testing from localhost
 	}
 	return strings.Split(r.RemoteAddr, ":")[0]
