@@ -1,0 +1,27 @@
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+h1 {
+    text-align: center;
+    border-bottom: 2px solid #444;
+    padding-bottom: 10px;
+    margin-bottom: 30px;
+}
+h2 {
+    border-bottom: 1px solid #eee;
+    padding-bottom: 5px;
+    margin-top: 25px;
+}
+p {
+    margin: 15px 0;
+}
+.last-updated {
+    font-style: italic;
+    text-align: right;
+    margin-top: 40px;
+    font-size: 0.9em;
+}
