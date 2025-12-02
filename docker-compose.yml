@@ -2,7 +2,7 @@ services:
   logmyip:
     build: .
     ports:
-      - "3068:3068"
+      - "127.0.0.1:3068:3068"
     environment:
       - RedisAddr=db:6379
       - RedisPass=${REDIS_PASSWORD}
