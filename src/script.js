@@ -49,8 +49,8 @@ function setScrollPercent() {
 function scrollViewport() {
     let diffW = docEl.scrollWidth - docWidth
     let diffH = docEl.scrollHeight - docHeight
-    docWidth = newWidth
-    docHeight = newHeight
+    docWidth = docEl.scrollWidth
+    docHeight = docEl.scrollHeight
 
     window.scroll(window.scrollX + diffW * scrollXP, window.scrollY + diffH * scrollYP)
 }
