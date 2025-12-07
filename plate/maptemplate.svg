@@ -1,5 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 360 180" fill-rule="evenodd" stroke-linejoin="round" stroke-miterlimit="2">
-    <style>circle { fill: #0098ff; fill-opacity: 0.25 }</style>
+    <defs>
+        <radialGradient id="point" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+        <stop offset="0%" stop-opacity="1" />
+        <stop offset="2.5%" stop-opacity="0.84" />
+        <stop offset="5%" stop-opacity="0.71" />
+        <stop offset="10%" stop-opacity="0.5" />
+        <stop offset="15%" stop-opacity="0.35" />
+        <stop offset="20%" stop-opacity="0.25" />
+        <stop offset="30%" stop-opacity="0.125" />
+        <stop offset="40%" stop-opacity="0.063" />
+        <stop offset="50%" stop-opacity="0.031" />
+        <stop offset="60%" stop-opacity="0.016" />
+        <stop offset="70%" stop-opacity="0.008" />
+        <stop offset="80%" stop-opacity="0.004" />
+        <stop offset="90%" stop-opacity="0.001" />
+        <stop offset="100%" stop-opacity="0" />
+        </radialGradient>
+    </defs>
+    <style>circle { fill: url(#point) } stop { stop-color: #0098ff;}</style>
     <!--template-->
     <circle cx="{ulon}" cy="{ulat}" r="{size}"/>
     <!--template-->
